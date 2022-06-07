@@ -1,7 +1,7 @@
 import face_recognition
 import cv2
 import numpy as np
-from dispFps import DispFps
+#from dispFps import DispFps
 import csv
 
 import datetime
@@ -18,11 +18,23 @@ import datetime
 # Get a reference to webcam #0 (the default one)
 video_capture = cv2.VideoCapture(0)
 
+
+## 20220607 userdate
+
+users_data = {1:['naoki', 'Naoki.jpg']}
+
+
 # Load a sample picture and learn how to recognize it.
 #me_image = face_recognition.load_image_file("me.jpg")
-naoki_image = face_recognition.load_image_file("Naoki.jpg")
+#naoki_image = face_recognition.load_image_file("Naoki.jpg")
+naoki_image = face_recognition.load_image_file(users_data[1][1])
+
+users_data[1].append(naoki_image)
+
 #known_face_encoding0 = face_recognition.face_encodings(me_image)[0]
-known_face_encoding0 = face_recognition.face_encodings(naoki_image)[0]
+#known_face_encoding0 = face_recognition.face_encodings(naoki_image)[0]
+known_face_encoding0 = face_recognition.face_encodings(users_data[1][2])[0]
+
 
 # Load a sample picture and learn how to recognize it.
 #me_image2 = face_recognition.load_image_file("me2.jpg")
@@ -49,7 +61,7 @@ face_names = []
 process_this_frame = True
 
 csvdata = []
-dispFps = DispFps()
+#dispFps = DispFps()
 
 while True:
     # Grab a single frame of video
@@ -89,7 +101,7 @@ while True:
                 name = known_face_names[best_match_index]
 
             ## 20220603
-            print(dt_now,name)
+            print(dt_now,face_distances,name)
 
 
             face_names.append(name)
