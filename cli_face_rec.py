@@ -6,6 +6,9 @@ import csv
 
 import datetime
 
+
+print('import done')
+
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
 #   1. Process each video frame at 1/4 resolution (though still display it at full resolution)
@@ -19,28 +22,32 @@ import datetime
 video_capture = cv2.VideoCapture(0)
 
 
-## 20220607 userdate
+## 20220607 userdata
 
-users_data = {1:['naoki', 'Naoki.jpg']}
+#users_data = {1:['naoki', 'Naoki.jpg']}
+users_data = {1:['naoki', 'Naoki.jpg'],2:['yasuko', 'Yasuko.jpg']}
 
 
 # Load a sample picture and learn how to recognize it.
 #me_image = face_recognition.load_image_file("me.jpg")
 #naoki_image = face_recognition.load_image_file("Naoki.jpg")
 naoki_image = face_recognition.load_image_file(users_data[1][1])
+yasuko_image = face_recognition.load_image_file(users_data[2][1])
 
 users_data[1].append(naoki_image)
+users_data[2].append(yasuko_image)
 
 #known_face_encoding0 = face_recognition.face_encodings(me_image)[0]
 #known_face_encoding0 = face_recognition.face_encodings(naoki_image)[0]
 known_face_encoding0 = face_recognition.face_encodings(users_data[1][2])[0]
+known_face_encoding1 = face_recognition.face_encodings(users_data[2][2])[0]
 
 
 # Load a sample picture and learn how to recognize it.
 #me_image2 = face_recognition.load_image_file("me2.jpg")
-yasuko_image2 = face_recognition.load_image_file("Yasuko.jpg")
+#yasuko_image2 = face_recognition.load_image_file("Yasuko.jpg")
 #known_face_encoding1 = face_recognition.face_encodings(me_image2)[0]
-known_face_encoding1 = face_recognition.face_encodings(yasuko_image2)[0]
+#known_face_encoding1 = face_recognition.face_encodings(yasuko_image2)[0]
 
 # Create arrays of known face encodings and their names
 known_face_encodings = [
@@ -63,7 +70,13 @@ process_this_frame = True
 csvdata = []
 #dispFps = DispFps()
 
+
+print('Preparation OK')
+
 while True:
+
+    #print('no face detect')
+
     # Grab a single frame of video
     ret, frame = video_capture.read()
 
@@ -72,6 +85,9 @@ while True:
 
     # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
     rgb_small_frame = small_frame[:, :, ::-1]
+
+
+    print('process_this_frame =',process_this_frame)
 
     # Only process every other frame of video to save time
     if process_this_frame:
@@ -82,8 +98,9 @@ while True:
         face_names = []
         for face_encoding in face_encodings:
             # See if the face is a match for the known face(s)
-            matches = face_recognition.compare_faces(known_face_encodings, face_encoding, 0.4)
-            name = "Unknown"
+            #matches = face_recognition.compare_faces(known_face_encodings, face_encoding, 0.4)
+            matches = face_recognition.compare_faces(known_face_encodings, face_encoding, 0.5)
+            name = "Unknown face"
 
 
             # # If a match was found in known_face_encodings, just use the first one.
@@ -106,6 +123,7 @@ while True:
 
             face_names.append(name)
 
+    # この処理がないとCPU温度が上がってしまう
     process_this_frame = not process_this_frame
 
     '''
